@@ -17,26 +17,32 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Определяем тему только на клиенте
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
     let initial: Theme = 'light';
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved === 'dark' || saved === 'light') {
-        initial = saved;
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        initial = 'dark';
-      }
-      setTheme(initial);
-      setIsReady(true);
+    if (saved === 'dark' || saved === 'light') {
+      initial = saved;
+    } else if (prefersDark) {
+      initial = 'dark';
     }
+    
+    setTheme(initial);
+    setIsReady(true);
   }, []);
 
   useEffect(() => {
     if (!isReady) return;
+    
+    // Обновляем классы HTML элемента
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
+      document.documentElement.classList.add('light');
       document.documentElement.classList.remove('dark');
     }
+    
     localStorage.setItem('theme', theme);
   }, [theme, isReady]);
 

@@ -1,9 +1,4 @@
-export interface Article {
-  id: number;
-  title: string;
-  content: string;
-  contentMarkdown: string;
-}
+import { Article } from '@/types';
 
 export const articles: Article[] = [
   {
